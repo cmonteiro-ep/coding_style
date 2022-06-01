@@ -7,14 +7,14 @@ pipeline {
         stage ('Building Docker build image') {
             steps {
                 script {
-                    docker.build("banana-test-image:${GIT_BRANCH}", '--pull .')
+                    docker.build("banana-test-image:origin/master", '--pull .')
                 }
             }
         }
         stage ('Checking code quality') {
             steps {
                 script {
-                    docker.image("banana-test-image:${GIT_BRANCH}").inside() {
+                    docker.image("banana-test-image:origin/master").inside() {
                         sh 'cd tests && python3 check_code_quality.py'
                     }
                 }
@@ -23,7 +23,7 @@ pipeline {
         stage ('Testing Banana') {
             steps {
                 script {
-                    docker.image("banana-test-image:${GIT_BRANCH}").inside() {
+                    docker.image("banana-test-image:origin/master").inside() {
                         sh 'echo -ne "Using VERA VERSION:"; vera++ -version; echo'
                         sh 'cd tests && python3 run_tests.py'
                     }
