@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     docker.image("banana-test-image:master").inside("""--entrypoint=''""") {
-                        sh 'cd tests && python3 check_code_quality.py'
+                        sh 'ls && cd tests && python3 check_code_quality.py'
                     }
                 }
             }
