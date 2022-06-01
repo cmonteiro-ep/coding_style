@@ -11,15 +11,6 @@ pipeline {
                 }
             }
         }
-        stage ('Checking code quality') {
-            steps {
-                script {
-                    docker.image("banana-test-image:master").inside("""--entrypoint=''""") {
-                        sh 'ls && cd tests && python3 check_code_quality.py'
-                    }
-                }
-            }
-        }
         stage ('Testing Banana') {
             steps {
                 script {
