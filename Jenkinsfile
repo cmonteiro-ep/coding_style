@@ -1,10 +1,7 @@
 #!groovy
 
 pipeline {
-    agent {
-        label 'docker'
-    }
-
+    agent : any
     options {
         buildDiscarder(logRotator(daysToKeepStr:'15'))
     }
