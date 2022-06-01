@@ -1,31 +1,39 @@
+#!groovy
+
 pipeline {
-    agent any
-    options {
-        disableConcurrentBuilds()
+    agent {
+        label 'docker'
     }
+
+    options {
+        buildDiscarder(logRotator(daysToKeepStr:'15'))
+    }
+
     stages {
-        stage ('Building Docker build image') {
+        stage('Build') {
             steps {
-                script {
-                    docker.build("banana-test-image:${GIT_BRANCH}", '--pull .')
+                ansiColor('xterm') {
+                    sh "docker build -t epitechcontent/vera:latest ."
                 }
             }
         }
-        stage ('Checking code quality') {
-            steps {
-                script {
-                    docker.image("banana-test-image:${GIT_BRANCH}").inside() {
-                        sh 'cd tests && python3 check_code_quality.py'
+        stage('Archive') {
+            when {
+                not {
+                    expression {
+                        return params.RELEASE
                     }
                 }
             }
-        }
-        stage ('Testing Banana') {
             steps {
-                script {
-                    docker.image("banana-test-image:${GIT_BRANCH}").inside() {
-                        sh 'echo -ne "Using VERA VERSION:"; vera++ -version; echo'
-                        sh 'cd tests && python3 run_tests.py'
+                ansiColor('xterm') {
+                    script {
+                        docker.withRegistry('https://nexus.epitest.eu:9081/', 'nexus-epitest-ci') {
+                            sh "docker tag epitechcontent/vera:latest nexus.epitest.eu:9081/epitechcontent/vera:latest && docker push nexus.epitest.eu:9081/epitechcontent/vera:latest"
+                        }
+                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-login') {
+                            sh "docker push epitechcontent/vera:latest"
+                        }
                     }
                 }
             }
@@ -33,11 +41,22 @@ pipeline {
     }
 
     post {
+        success {
+            withCredentials([string(credentialsId: 'teams-webhook', variable: 'TEAMS_WEBHOOK')]) {
+                script {
+                    office365ConnectorSend message: "Build Success for $JOB_NAME#$BUILD_ID", status:"Success", webhookUrl:"$TEAMS_WEBHOOK"
+                }
+            }
+        }
+        failure {
+            withCredentials([string(credentialsId: 'teams-webhook', variable: 'TEAMS_WEBHOOK')]) {
+                script {
+                    office365ConnectorSend message: "Build Failure for $JOB_NAME#$BUILD_ID", status:"Failure", webhookUrl:"$TEAMS_WEBHOOK"
+                }
+            }
+        }
         always {
-            junit(
-                allowEmptyResults: true,
-                testResults: 'tests/tests-report.xml'
-            )
+            deleteDir()
         }
     }
 }

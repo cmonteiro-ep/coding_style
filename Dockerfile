@@ -1,25 +1,30 @@
-FROM epitechcontent/epitest-docker
+FROM debian:stretch
 
-WORKDIR /tmp
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH=$PATH:/bin/:/usr/bin/
 
-COPY 'dnf.requirements.txt' 'dnf.requirements.txt'
-RUN dnf -y install $(cat 'dnf.requirements.txt') \
-    && dnf clean all -y \
-    && rm -f 'dnf.requirements.txt'
+RUN apt-get update && apt-get install -y cmake \
+    lua5.1 \
+    libboost-thread1.62.0 \
+    libboost-wave1.62.0 \
+    liblua5.1-0 \
+    libluabind-dev \
+    liblua5.1-0-dev \
+    tcl-dev \
+    pandoc \
+    tk-dev \
+    python2.7-dev \
+    python3.5 \
+    python3.5-dev \
+    python3-pip
 
-RUN wget https://github.com/Epitech/banana-vera/archive/refs/heads/master.zip \
-    && unzip master.zip \
-    && cd 'banana-vera-master' \
-    && cmake . -DVERA_LUA=OFF -DPANDOC=OFF \
-    && cmake --build . \
-    && make -j \
-    && make install \
-    && cd .. \
-    && rm -rf 'banana-vera-master' 'master.zip'
+# Download Vera++ 1.3.0 sources
+ADD https://bitbucket.org/verateam/vera/downloads/vera++-1.3.0.tar.gz /tmp/vera++-1.3.0.tar.gz
+RUN cd /tmp && tar zxvf vera++-1.3.0.tar.gz
 
-COPY 'pip3.requirements.txt' 'pip3.requirements.txt'
-RUN pip3 install -r 'pip3.requirements.txt' \
-    && pip3 cache purge \
-    && rm -f 'pip3.requirements.txt'
+# build and install 
+RUN cd /tmp/vera++-1.3.0 && mkdir build && cd build && cmake .. && make -j8 && make install
 
-ENTRYPOINT /bin/sh
+#cleanup
+RUN rm /tmp/vera++-1.3.0.tar.gz
+RUN apt-get -y autoremove && apt-get -y autoclean
