@@ -1,0 +1,31 @@
+#!/usr/bin/tclsh
+# This profile includes all the rules provided by our coding style
+
+set rules {
+    A3
+    C1
+    C3
+    F2
+    F3
+    F4
+    F5
+    F6
+    F7
+    G1
+    G2
+    G3
+    G4
+    G6
+    G7
+    G8
+    G9
+    H1
+    H2
+    L2
+    L3
+    L4
+    O1
+    O3
+    O4
+    V1
+}
