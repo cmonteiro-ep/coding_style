@@ -8,7 +8,7 @@ import sys, os, subprocess, tempfile, re
 
 def main(args, directory):
     if len(args) != 1:
-        print "Usage: output-deps.py quickbook-command"
+        print ("Usage: output-deps.py quickbook-command")
         exit(1)
     quickbook_command = args[0]
 
@@ -47,9 +47,9 @@ def main(args, directory):
         output_gold = 'simple_custom_pretty_print.xml')
 
     if failures == 0:
-        print "Success"
+        print ("Success")
     else:
-        print "Failures:",failures
+        print ("Failures:",failures)
         exit(failures)
 
 def run_quickbook(quickbook_command, filename, output_gold = None,
@@ -81,7 +81,7 @@ def run_quickbook(quickbook_command, filename, output_gold = None,
         command.extend(extra_flags)
 
     try:
-        print 'Running: ' + ' '.join(command)
+        print ('Running: ' + ' '.join(command))
         print
         exit_code = subprocess.call(command)
         print
@@ -109,29 +109,29 @@ def run_quickbook(quickbook_command, filename, output_gold = None,
         gold = load_dependencies(deps_gold)
         if deps != gold:
             failures = failures + 1
-            print "Dependencies don't match:"
-            print "Gold:", gold
-            print "Result:", deps
+            print("Dependencies don't match:")
+            print("Gold:", gold)
+            print("Result:", deps)
             print
 
     if locations_gold:
         gold = load_locations(locations_gold)
         if locations != gold:
             failures = failures + 1
-            print "Dependencies don't match:"
-            print "Gold:", gold
-            print "Result:", locations
+            print ("Dependencies don't match:")
+            print ("Gold:", gold)
+            print ("Result:", locations)
             print
 
     if output_gold:
         gold = load_file(output_gold)
         if gold != output:
             failures = failures + 1
-            print "Output doesn't match:"
-            print
-            print gold
-            print
-            print output
+            print ("Output doesn't match:")
+            print()
+            print (gold)
+            print ()
+            print (output)
             print
 
     return failures
