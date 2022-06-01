@@ -1,0 +1,29 @@
+A3:file should end with a line break (\\n)
+C1:nested conditional branching with a depth of 3 or more should be avoided and an if block should not contain more than 3 branching
+C3:"goto" keyword is not allowed
+F2:function name should define the task it executes, be in English, follow the snake_case convention and contain a verb
+F3:too long line
+F4:too long function
+F5:a function should not need more than 4 arguments and taking no parameters should take "void" as argument in the function declaration
+F6:comment inside function
+F7:nested function is not allowed
+G1:file must start with a correctly formatted Epitech standard header
+G2:one and only one empty line should separate the implementations of functions
+G3:bad indentation of preprocessor directive
+G4:global variables should be avoided
+G6:include directive should only include header ".h" files
+G7:carriage return character (\\r) must not be used
+G8:trailing space
+G9:leading or trailing empty line
+H1:bad separation between source file and header file
+H2:header file not protected against double inclusion
+H3:macros should match only one statement
+L1:multiple statements on the same line
+L2:bad indentation at the start of a line
+L3:misplaced space(s)
+L4:misplaced curly brackets
+O1:delivery folder should not contain compiled, temporary or unnecessary files
+O2:incorrect file extension
+O3:more than 5 functions in a single file
+O4:C file name must follow the snake_case convention, be clear, precise, in English, explicit and unambiguous
+V1:incorrect identifier name
